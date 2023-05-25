@@ -1,10 +1,47 @@
 import { Store } from "../core";
 
-const store = new Store({
+export interface SimpleMovie {
+  Poster: string;
+  Title: string;
+  Type: string;
+  Year: string;
+  imdbID: string;
+}
+
+interface DetailedMovie {
+  Title: string;
+  Poster: string;
+  Ratings: Rating[];
+  Production: string;
+  Genre: string;
+  Director: string;
+  Actors: string;
+  Plot: string;
+  Country: string;
+  Runtime: string;
+  Released: string;
+}
+
+interface Rating {
+  Source: string;
+  Value: string;
+}
+
+interface State {
+  searchText: string;
+  page: number;
+  movies: SimpleMovie[];
+  movie: DetailedMovie;
+  pageMax: number;
+  loading: boolean;
+  message: string;
+}
+
+const store = new Store<State>({
   searchText: "",
   page: 1,
   movies: [],
-  movie: {},
+  movie: {} as DetailedMovie,
   pageMax: 1,
   loading: false,
   message: "Search for the movie title!",
@@ -12,7 +49,7 @@ const store = new Store({
 
 export default store;
 
-export const searchMovies = async (page) => {
+export const searchMovies = async (page: number) => {
   store.state.loading = true;
   store.state.page = page;
 
@@ -41,7 +78,7 @@ export const searchMovies = async (page) => {
   }
 };
 
-export const getMovieDetails = async (id) => {
+export const getMovieDetails = async (id: string) => {
   try {
     const res = await fetch(
       `https://www.omdbapi.com/?apikey=7035c60c&i=${id}&plot=full`
